@@ -10,5 +10,5 @@ assert_count_df <- function(var){
 
 all_non_n_cols_to_char <- function(df){
   df %>%
-    dplyr::mutate(dplyr::across(!matches("n"), as.character))
+    dplyr::mutate(dplyr::across(!matches("^n$"), as.character))
 }
