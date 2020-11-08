@@ -5,10 +5,13 @@
 # TODO Add option to send arguments to plot_ly func
 # TODO Add option to mask default branchvalue
 # TODO pretify hover text
+# TODO add documentation
+# TODO create readme
 
 #' Create a sunburst plot from count data
 #'
 #' @param count_df
+#' @param root
 #'
 #' @return
 #' @export
@@ -16,6 +19,40 @@
 #' @examples
 count_to_sunburst <- function(count_df,
                               root = NULL){
+
+  params <- create_all_col_params(count_df, root)
+
+  purrr::exec(plotly::plot_ly,
+              !!!params,
+              type = "sunburst",
+              branchvalues = "total")
+}
+
+
+#' Title
+#'
+#' @param count_df
+#' @param root
+#'
+#' @return
+#' @export
+#'
+#' @examples
+count_to_treemap <- function(count_df,
+                              root = NULL){
+
+  params <- create_all_col_params(count_df, root)
+
+  purrr::exec(plotly::plot_ly,
+              !!!params,
+              type = "treemap",
+              branchvalues = "total")
+}
+
+
+create_all_col_params <- function(count_df,
+                                  root){
+
   assert_count_df(count_df)
   if (!is.null(root)){
     assertthat::assert_that(is.character(root),
@@ -23,17 +60,6 @@ count_to_sunburst <- function(count_df,
   }
 
   count_df <- all_non_n_cols_to_char(count_df)
-
-  params <- create_all_col_params(count_df, root)
-
-  purrr::exec(plotly::plot_ly,
-              !!!params,
-              type = 'sunburst',
-              branchvalues = 'total')
-}
-
-create_all_col_params <- function(count_df,
-                                  root){
 
   category_num <- ncol(count_df) - 1
 
