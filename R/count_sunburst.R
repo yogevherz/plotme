@@ -2,9 +2,9 @@
 # Returns sunburst plotly
 # TODO find a way to incorporate colors? Maybe only in path function
 # TODO figure out what to do with NAs, try and paint them differently
-# TODO Add assertions
-# TODO make different col types work (probably convert all to char)
 # TODO Add option to send arguments to plot_ly func
+# TODO Add option to mask default branchvalue
+# TODO pretify hover text
 
 #' Create a sunburst plot from count data
 #'
@@ -16,6 +16,13 @@
 #' @examples
 count_to_sunburst <- function(count_df,
                               root = NULL){
+  assert_count_df(count_df)
+  if (!is.null(root)){
+    assertthat::assert_that(is.character(root),
+                            assertthat::is.scalar(root))
+  }
+
+  count_df <- all_non_n_cols_to_char(count_df)
 
   params <- create_all_col_params(count_df, root)
 
@@ -27,11 +34,6 @@ count_to_sunburst <- function(count_df,
 
 create_all_col_params <- function(count_df,
                                   root){
-  assert_count_df(count_df)
-  if (!is.null(root)){
-    assertthat::assert_that(is.character(root),
-                            assertthat::is.scalar(root))
-  }
 
   category_num <- ncol(count_df) - 1
 
