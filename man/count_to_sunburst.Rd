@@ -4,10 +4,10 @@
 \alias{count_to_sunburst}
 \title{Create a sunburst plot from count data}
 \usage{
-count_to_sunburst(count_df)
+count_to_sunburst(count_df, root = NULL)
 }
 \arguments{
-\item{count_df}{}
+\item{root}{}
 }
 \value{
 

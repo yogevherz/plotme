@@ -2,4 +2,5 @@
 
 export("%>%")
 export(count_to_sunburst)
+export(count_to_treemap)
 importFrom(magrittr,"%>%")

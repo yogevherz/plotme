@@ -1,12 +1,12 @@
 # Takes count_df, barnchvalues (default = "total"), any additional arguments
 # Returns sunburst plotly
-# TODO find a way to incorporate colors? Maybe only in path function
-# TODO figure out what to do with NAs, try and paint them differently
+# TODO add documentation
+# TODO create readme
 # TODO Add option to send arguments to plot_ly func
 # TODO Add option to mask default branchvalue
 # TODO pretify hover text
-# TODO add documentation
-# TODO create readme
+# TODO figure out what to do with NAs, try and paint them differently
+# TODO find a way to incorporate colors? Maybe only in path function
 
 #' Create a sunburst plot from count data
 #'
