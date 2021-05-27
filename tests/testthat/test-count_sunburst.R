@@ -9,23 +9,15 @@ test_that("gets erros where needed",{
                "count")
   expect_error(count_to_sunburst(count_df = iris),
                "count")
-  expect_error(count_to_sunburst(count_df = example_df, root = 1),
-               "character")
-  expect_error(count_to_sunburst(count_df = example_df, root = c("a", "b")),
-               "scalar")
 })
 
 test_that("creates correct params", {
-  expect_snapshot(create_all_col_params(example_df,
-                                        root = NULL))
-  expect_snapshot(create_all_col_params(example_df,
-                                        root = "grand_col"))
+  expect_snapshot(create_all_col_params(example_df))
 })
 
 test_that("dfs with col name col_num work", {
   example_df <- dplyr::rename(example_df, col_name = col_1)
-  expect_snapshot(create_all_col_params(example_df,
-                                        root = NULL))
+  expect_snapshot(create_all_col_params(example_df))
 })
 
 

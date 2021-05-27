@@ -4,14 +4,12 @@
 # TODO create readme
 # TODO Add option to send arguments to plot_ly func
 # TODO Add option to mask default branchvalue
-# TODO pretify hover text
 # TODO figure out what to do with NAs, try and paint them differently
 # TODO find a way to incorporate colors? Maybe only in path function
 
 #' Create a sunburst plot from count data
 #'
 #' @param count_df
-#' @param root
 #'
 #' @return
 #' @export
@@ -32,7 +30,6 @@ count_to_sunburst <- function(count_df){
 #' Title
 #'
 #' @param count_df
-#' @param root
 #'
 #' @return
 #' @export
