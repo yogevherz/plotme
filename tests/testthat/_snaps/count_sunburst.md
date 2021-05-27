@@ -1,7 +1,7 @@
 # creates correct params
 
     Code
-      create_all_col_params(example_df)
+      create_all_col_params(example_df, fill_by_n = FALSE)
     Output
       # A tibble: 7 x 5
         ids    parents labels values hovertext                       
@@ -17,7 +17,7 @@
 # dfs with col name col_num work
 
     Code
-      create_all_col_params(example_df)
+      create_all_col_params(example_df, fill_by_n = FALSE)
     Output
       # A tibble: 7 x 5
         ids    parents labels values hovertext                          

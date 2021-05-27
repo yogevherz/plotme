@@ -6,7 +6,6 @@
 # TODO Add option to mask default branchvalue
 # TODO figure out what to do with NAs, try and paint them differently
 # TODO find a way to incorporate colors? Maybe only in path function
-
 #' Create a sunburst plot from count data
 #'
 #' @param count_df
@@ -15,9 +14,9 @@
 #' @export
 #'
 #' @examples
-count_to_sunburst <- function(count_df){
+count_to_sunburst <- function(count_df, fill_by_n = FALSE){
 
-  params <- create_all_col_params(count_df)
+  params <- create_all_col_params(count_df, fill_by_n)
 
   purrr::exec(plotly::plot_ly,
               !!!params,
@@ -35,9 +34,9 @@ count_to_sunburst <- function(count_df){
 #' @export
 #'
 #' @examples
-count_to_treemap <- function(count_df){
+count_to_treemap <- function(count_df, fill_by_n = FALSE){
 
-  params <- create_all_col_params(count_df)
+  params <- create_all_col_params(count_df, fill_by_n)
 
   purrr::exec(plotly::plot_ly,
               !!!params,
@@ -47,26 +46,36 @@ count_to_treemap <- function(count_df){
 }
 
 
-create_all_col_params <- function(count_df){
+create_all_col_params <- function(count_df, fill_by_n){
 
   assert_count_df(count_df)
+  assertthat::assert_that(is.logical(fill_by_n),
+                          length(fill_by_n) == 1,
+                          msg = "fill_by_n must be either TRUE or FALSE")
 
   count_df <- all_non_n_cols_to_char(count_df)
 
   category_num <- ncol(count_df) - 1
 
-  purrr::map(1:category_num,
+  params <- purrr::map(1:category_num,
              create_one_col_params,
              df = count_df,
              root = "") %>%
     dplyr::bind_rows() %>%
     dplyr::mutate(hovertext = stringr::str_glue(
       "column: {hovertext}\nvalue: {labels}\nn: {values}"))
+
+  if(!fill_by_n){
+    params <- params %>%
+      dplyr::select(-marker)
+  }
+  params
 }
 
 create_one_col_params <- function(df,
                                   col_num,
                                   root){
+
   df %>%
     dplyr::group_by(dplyr::across(1:dplyr::all_of(col_num))) %>%
     dplyr::summarise(values = sum(.data$n), .groups = "drop") %>%
@@ -81,8 +90,13 @@ create_one_col_params <- function(df,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(labels = .[[!!col_num]],
-                  hovertext = names(.)[!!col_num]) %>%
-    dplyr::select(ids, parents, labels, values, hovertext)
+                  hovertext = names(.)[!!col_num],
+                  marker = list(
+                    colorbar = list(
+                      bgcolor = ""
+                    )
+                  )) %>%
+    dplyr::select(ids, parents, labels, values, hovertext, marker)
 }
 
 
