@@ -1,11 +1,5 @@
-# Takes count_df, barnchvalues (default = "total"), any additional arguments
-# Returns sunburst plotly
 # TODO add documentation
 # TODO create readme
-# TODO Add option to send arguments to plot_ly func
-# TODO Add option to mask default branchvalue
-# TODO figure out what to do with NAs, try and paint them differently
-# TODO find a way to incorporate colors? Maybe only in path function
 #' Create a sunburst plot from count data
 #'
 #' @param count_df
@@ -14,9 +8,9 @@
 #' @export
 #'
 #' @examples
-count_to_sunburst <- function(count_df, fill_by_n = FALSE){
+count_to_sunburst <- function(count_df, fill_by_n = FALSE, sort_by_n = FALSE){
 
-  params <- create_all_col_params(count_df, fill_by_n)
+  params <- create_all_col_params(count_df, fill_by_n, sort_by_n)
 
   purrr::exec(plotly::plot_ly,
               !!!params,
@@ -34,9 +28,9 @@ count_to_sunburst <- function(count_df, fill_by_n = FALSE){
 #' @export
 #'
 #' @examples
-count_to_treemap <- function(count_df, fill_by_n = FALSE){
+count_to_treemap <- function(count_df, fill_by_n = FALSE, sort_by_n = FALSE){
 
-  params <- create_all_col_params(count_df, fill_by_n)
+  params <- create_all_col_params(count_df, fill_by_n, sort_by_n)
 
   purrr::exec(plotly::plot_ly,
               !!!params,
@@ -46,7 +40,7 @@ count_to_treemap <- function(count_df, fill_by_n = FALSE){
 }
 
 
-create_all_col_params <- function(count_df, fill_by_n){
+create_all_col_params <- function(count_df, fill_by_n, sort_by_n){
 
   assert_count_df(count_df)
   assertthat::assert_that(is.logical(fill_by_n),
@@ -58,16 +52,19 @@ create_all_col_params <- function(count_df, fill_by_n){
   category_num <- ncol(count_df) - 1
 
   params <- purrr::map(1:category_num,
-             create_one_col_params,
-             df = count_df,
-             root = "") %>%
+                       create_one_col_params,
+                       df = count_df,
+                       root = "") %>%
     dplyr::bind_rows() %>%
-    dplyr::mutate(hovertext = stringr::str_glue(
-      "column: {hovertext}\nvalue: {labels}\nn: {values}"))
+    dplyr::mutate(sort = sort_by_n)
 
-  if(!fill_by_n){
+  if(fill_by_n){
     params <- params %>%
-      dplyr::select(-marker)
+      dplyr::mutate(marker = list(
+        colorbar = list(
+          bgcolor = ""
+          )
+      ))
   }
   params
 }
@@ -75,6 +72,7 @@ create_all_col_params <- function(count_df, fill_by_n){
 create_one_col_params <- function(df,
                                   col_num,
                                   root){
+  col_name <- names(df)[col_num]
 
   df %>%
     dplyr::group_by(dplyr::across(1:dplyr::all_of(col_num))) %>%
@@ -90,13 +88,10 @@ create_one_col_params <- function(df,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(labels = .[[!!col_num]],
-                  hovertext = names(.)[!!col_num],
-                  marker = list(
-                    colorbar = list(
-                      bgcolor = ""
-                    )
-                  )) %>%
-    dplyr::select(ids, parents, labels, values, hovertext, marker)
+                  hovertext = stringr::str_glue(
+                    "column: {col_name}\nvalue: {labels}\nn: {values}")
+    ) %>%
+    dplyr::select(ids, parents, labels, values, hovertext)
 }
 
 
