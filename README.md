@@ -66,3 +66,4 @@ penguins %>%
   count_to_treemap(fill_by_n = TRUE)
 ```
 
+<img src="man/figures/readme2.gif" width="579"/>
