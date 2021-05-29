@@ -6,7 +6,7 @@ The `{plotme}` package provides a human friendly interface for plots that are ot
 
 ## Installation
 ```{r}
-devtools::install_github("yogevherz/plotme"")
+devtools::install_github("yogevherz/plotme")
 ```
 ## Usage
 
