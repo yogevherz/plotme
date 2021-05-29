@@ -36,6 +36,8 @@ penguins %>%
   count_to_sunburst()
 ```
 
+<img src="man/figures/paste-86908F21.png" width="507"/>
+
 Color groups by size:
 
 ``` r
@@ -44,13 +46,17 @@ penguins %>%
   count_to_sunburst(fill_by_n = TRUE)
 ```
 
-Make group size promotional to the sum of another variable:
+<img src="man/figures/paste-9883B116.png" width="582"/>
+
+Make group size proportional to the sum of another variable (instead of observation count):
 
 ``` r
 penguins %>% 
   count(species, island, sex, wt = body_mass_g) %>% 
   count_to_sunburst(fill_by_n = TRUE)
 ```
+
+<img src="man/figures/paste-E2F67398.png" width="586"/>
 
 Works the same for a ***treemap*** plot:
 
@@ -59,3 +65,4 @@ penguins %>%
   count(species, island, sex, wt = body_mass_g) %>% 
   count_to_treemap(fill_by_n = TRUE)
 ```
+
