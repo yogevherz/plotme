@@ -28,7 +28,7 @@ penguins %>%
 
 <img src="man/figures/readme.gif" width="510"/>
 
-To change the hierarchy, simply change the order in the `count()` call:
+To change the hierarchy, simply change the order within the `count()` call:
 
 ``` r
 penguins %>% 
@@ -38,7 +38,7 @@ penguins %>%
 
 <img src="man/figures/paste-86908F21.png" width="507"/>
 
-Color groups by size:
+Color groups by observation numbers:
 
 ``` r
 penguins %>% 
@@ -48,7 +48,7 @@ penguins %>%
 
 <img src="man/figures/paste-9883B116.png" width="582"/>
 
-Make group size proportional to the sum of another variable (instead of observation count):
+Make group size proportional to the sum of another variable (in this case, the sum of body mass):
 
 ``` r
 penguins %>% 
@@ -58,7 +58,7 @@ penguins %>%
 
 <img src="man/figures/paste-E2F67398.png" width="586"/>
 
-Works the same for a ***treemap*** plot:
+Or easily create a ***treemap*** plot instead:
 
 ``` r
 penguins %>% 
