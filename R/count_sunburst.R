@@ -1,16 +1,40 @@
 # TODO add documentation
 # TODO create readme
-#' Create a sunburst plot from count data
-#'
-#' @param count_df
-#'
-#' @return
-#' @export
-#'
-#' @examples
-count_to_sunburst <- function(count_df, fill_by_n = FALSE, sort_by_n = FALSE){
 
-  params <- create_all_col_params(count_df, fill_by_n, sort_by_n)
+
+#' Create an interactive plotly from count data
+#'
+#' @description
+#' These functions help you quickly create heirarchal and interactive plots
+#' from categorical data. They expect the summary of the data created by
+#' `dplyr::count()` and produce either a sunburst plot (`count_to_sunburst()`) or
+#' a treemap plot (`count_to_treemap()`)
+#'
+#' @param count_data An output of dplyr::count(), tibble or data frame
+#' @param fill_by_n If TRUE, uses a continuous scale to fill plot by group size
+#' @param sort_by_n If TRUE, sorts groups in plot by size, if FALSE sorts them alphabetically
+#'
+#' @export
+#' @examples
+#' library(dplyr)
+#' starwars_count <- count(starwars, species, eye_color, name)
+#'
+#' # sunburst plot
+#' count_to_sunburst(starwars_count)
+#'
+#' # fill by group size
+#' count_to_sunburst(starwars_count, fill_by_n = TRUE)
+#'
+#' # treemap plot, ordered by group size
+#' count_to_treemap(starwars_count, sort_by_n = TRUE)
+#'
+#' # display al charchaters by homeworld
+#' starwars %>%
+#'   count(homeworld, name) %>%
+#'   count_to_treemap(sort_by_n = TRUE)
+count_to_sunburst <- function(count_data, fill_by_n = FALSE, sort_by_n = FALSE){
+
+  params <- create_all_col_params(count_data, fill_by_n, sort_by_n)
 
   purrr::exec(plotly::plot_ly,
               !!!params,
@@ -20,17 +44,11 @@ count_to_sunburst <- function(count_df, fill_by_n = FALSE, sort_by_n = FALSE){
 }
 
 
-#' Title
-#'
-#' @param count_df
-#'
-#' @return
 #' @export
-#'
-#' @examples
-count_to_treemap <- function(count_df, fill_by_n = FALSE, sort_by_n = FALSE){
+#' @rdname count_to_sunburst
+count_to_treemap <- function(count_data, fill_by_n = FALSE, sort_by_n = FALSE){
 
-  params <- create_all_col_params(count_df, fill_by_n, sort_by_n)
+  params <- create_all_col_params(count_data, fill_by_n, sort_by_n)
 
   purrr::exec(plotly::plot_ly,
               !!!params,
@@ -40,20 +58,23 @@ count_to_treemap <- function(count_df, fill_by_n = FALSE, sort_by_n = FALSE){
 }
 
 
-create_all_col_params <- function(count_df, fill_by_n, sort_by_n){
+create_all_col_params <- function(count_data, fill_by_n, sort_by_n){
 
-  assert_count_df(count_df)
+  assert_count_df(count_data)
   assertthat::assert_that(is.logical(fill_by_n),
                           length(fill_by_n) == 1,
                           msg = "fill_by_n must be either TRUE or FALSE")
+  assertthat::assert_that(is.logical(sort_by_n),
+                          length(sort_by_n) == 1,
+                          msg = "sort_by_n must be either TRUE or FALSE")
 
-  count_df <- all_non_n_cols_to_char(count_df)
+  count_data <- all_non_n_cols_to_char(count_data)
 
-  category_num <- ncol(count_df) - 1
+  category_num <- ncol(count_data) - 1
 
   params <- purrr::map(1:category_num,
                        create_one_col_params,
-                       df = count_df,
+                       df = count_data,
                        root = "") %>%
     dplyr::bind_rows() %>%
     dplyr::mutate(sort = sort_by_n)

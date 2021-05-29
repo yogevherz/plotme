@@ -2,16 +2,41 @@
 % Please edit documentation in R/count_sunburst.R
 \name{count_to_sunburst}
 \alias{count_to_sunburst}
-\title{Create a sunburst plot from count data}
+\alias{count_to_treemap}
+\title{Create an interactive plotly from count data}
 \usage{
-count_to_sunburst(count_df, root = NULL)
+count_to_sunburst(count_data, fill_by_n = FALSE, sort_by_n = FALSE)
+
+count_to_treemap(count_data, fill_by_n = FALSE, sort_by_n = FALSE)
 }
 \arguments{
-\item{root}{}
-}
-\value{
+\item{count_data}{An output of dplyr::count(), tibble or data frame}
 
+\item{fill_by_n}{If TRUE, uses a continuous scale to fill plot by group size}
+
+\item{sort_by_n}{If TRUE, sorts groups in plot by size, if FALSE sorts them alphabetically}
 }
 \description{
-Create a sunburst plot from count data
+These functions help you quickly create heirarchal and interactive plots
+from categorical data. They expect the summary of the data created by
+\code{dplyr::count()} and produce either a sunburst plot (\code{count_to_sunburst()}) or
+a treemap plot (\code{count_to_treemap()})
+}
+\examples{
+library(dplyr)
+starwars_count <- count(starwars, species, eye_color, name)
+
+# sunburst plot
+count_to_sunburst(starwars_count)
+
+# fill by group size
+count_to_sunburst(starwars_count, fill_by_n = TRUE)
+
+# treemap plot, ordered by group size
+count_to_treemap(starwars_count, sort_by_n = TRUE)
+
+# display al charchaters by homeworld
+starwars \%>\%
+  count(homeworld, name) \%>\%
+  count_to_treemap(sort_by_n = TRUE)
 }
