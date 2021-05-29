@@ -14,7 +14,7 @@ library(dplyr)
 library(palmerpenguins)
 ```
 
-The `count_to_sunburst()` and `count_to_treemap()` are built to help you quickly create interactive hierarchical plots from categorical data. This can be very handy when exploring new datasets. The function expects a summary of the data created by `dplyr::count()`.
+The `count_to_sunburst()` and `count_to_treemap()` functions are built to help you quickly create interactive hierarchical plots from categorical data. This can be very handy when exploring new datasets. The function expects a summary table created by `dplyr::count()`.
 
 Quickly create a ***sunburst*** plot:
 
