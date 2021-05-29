@@ -5,7 +5,7 @@
 #' Create an interactive plotly from count data
 #'
 #' @description
-#' These functions help you quickly create heirarchal and interactive plots
+#' These functions help you quickly create interactive hierarchical plots
 #' from categorical data. They expect the summary of the data created by
 #' `dplyr::count()` and produce either a sunburst plot (`count_to_sunburst()`) or
 #' a treemap plot (`count_to_treemap()`)
