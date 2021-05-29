@@ -1,7 +1,5 @@
 # plotme
 
-------------------------------------------------------------------------
-
 The `{plotme}` package provides a human friendly interface for plots that are otherwise quite hard to create in R. Currently only two functions exist, to create `{plotly}` ***sunburst*** and ***treemap*** plots, but (hopefully) more is to come.
 
 ## Installation
