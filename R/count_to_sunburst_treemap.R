@@ -1,6 +1,3 @@
-# TODO add documentation
-# TODO create readme
-
 
 #' Create an interactive plotly from count data
 #'

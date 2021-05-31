@@ -3,9 +3,11 @@
 The `{plotme}` package provides a human friendly interface for plots that are otherwise quite hard to create in R. Currently only two functions exist, to create `{plotly}` ***sunburst*** and ***treemap*** plots, but (hopefully) more is to come.
 
 ## Installation
+
 ```{r}
 devtools::install_github("yogevherz/plotme")
 ```
+
 ## Usage
 
 ``` r
@@ -14,7 +16,7 @@ library(dplyr)
 library(palmerpenguins)
 ```
 
-The `count_to_sunburst()` and `count_to_treemap()` functions are built to help you quickly create interactive hierarchical plots from categorical data. This can be very handy when exploring new datasets. The function expects a summary table created by `dplyr::count()`.
+The `count_to_sunburst()` and `count_to_treemap()` functions are built to help you quickly create interactive hierarchical `{plotly}` plots from categorical data. The This can be very handy when exploring new datasets. The functions expect a summary table created by `dplyr::count()`.
 
 Quickly create a ***sunburst*** plot:
 
