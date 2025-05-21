@@ -5,9 +5,27 @@
 \alias{count_to_treemap}
 \title{Create an interactive plotly from count data}
 \usage{
-count_to_sunburst(count_data, fill_by_n = FALSE, sort_by_n = FALSE)
+count_to_sunburst(
+  count_data,
+  fill_by_n = FALSE,
+  sort_by_n = FALSE,
+  colorscale = "Viridis",
+  na_handling = "as_string",
+  na_replace_str = "NA_string_rep",
+  root_label = "",
+  ...
+)
 
-count_to_treemap(count_data, fill_by_n = FALSE, sort_by_n = FALSE)
+count_to_treemap(
+  count_data,
+  fill_by_n = FALSE,
+  sort_by_n = FALSE,
+  colorscale = "Viridis",
+  na_handling = "as_string",
+  na_replace_str = "NA_string_rep",
+  root_label = "",
+  ...
+)
 }
 \arguments{
 \item{count_data}{An output of dplyr::count(), tibble or data frame}
@@ -15,6 +33,20 @@ count_to_treemap(count_data, fill_by_n = FALSE, sort_by_n = FALSE)
 \item{fill_by_n}{If TRUE, uses a continuous scale to fill plot by group size}
 
 \item{sort_by_n}{If TRUE, sorts groups in plot by size, if FALSE sorts them alphabetically}
+
+\item{colorscale}{Character string specifying the Plotly colorscale to use when \code{fill_by_n = TRUE}.
+Defaults to "Viridis". See \code{plotly::schema()} under \verb{traces > sunburst > marker > colorscale} for options.}
+
+\item{na_handling}{Character string specifying how to handle NA values in grouping columns.
+One of "as_string" (default, NAs converted to "NA"), "omit" (rows with NAs are removed),
+or "replace" (NAs are replaced with \code{na_replace_str}).}
+
+\item{na_replace_str}{Character string to replace NA values with when \code{na_handling = "replace"}.
+Defaults to "NA_string_rep".}
+
+\item{root_label}{Character string to use as the label for the root node. Defaults to \code{""} (no explicit root node).}
+
+\item{...}{Additional arguments passed to \code{plotly::plot_ly}.}
 }
 \description{
 These functions help you quickly create interactive hierarchical plots
@@ -24,19 +56,63 @@ a treemap plot (\code{count_to_treemap()})
 }
 \examples{
 library(dplyr)
+library(plotly) # For layout argument
+
+# Basic count data
 starwars_count <- count(starwars, species, eye_color, name)
 
-# sunburst plot
+# Basic sunburst plot
 count_to_sunburst(starwars_count)
 
-# fill by group size
-count_to_sunburst(starwars_count, fill_by_n = TRUE)
+# Sunburst with fill by group size and custom colorscale
+count_to_sunburst(starwars_count, fill_by_n = TRUE, colorscale = "Plasma")
 
-# treemap plot, ordered by group size
+# Sunburst with a title using ... for layout options
+count_to_sunburst(starwars_count, layout = list(title = "Star Wars Character Distribution"))
+
+# Sunburst with a custom root label
+count_to_sunburst(starwars_count, root_label = "All Characters")
+
+# Basic treemap plot, ordered by group size
 count_to_treemap(starwars_count, sort_by_n = TRUE)
 
-# display al charchaters by homeworld
+# Treemap for characters by homeworld
 starwars \%>\%
   count(homeworld, name) \%>\%
   count_to_treemap(sort_by_n = TRUE)
+
+# NA handling examples
+# Create a dataset with NAs
+starwars_na_data <- starwars \%>\%
+  mutate(
+    homeworld = case_when(
+      name \%in\% c("Luke Skywalker", "Anakin Skywalker") ~ NA_character_,
+      TRUE ~ homeworld
+    ),
+    species = case_when(
+      name == "R2-D2" ~ NA_character_,
+      TRUE ~ species
+    )
+  )
+starwars_na_count <- count(starwars_na_data, homeworld, species, name)
+
+# NA handling: "as_string" (default) - NAs appear as "NA"
+count_to_treemap(starwars_na_count, na_handling = "as_string", fill_by_n = TRUE)
+
+# NA handling: "omit" - Rows with NAs are removed
+count_to_treemap(starwars_na_count, na_handling = "omit", fill_by_n = TRUE)
+
+# NA handling: "replace" - NAs are replaced with a custom string
+count_to_treemap(starwars_na_count, na_handling = "replace", na_replace_str = "Unknown Species/Homeworld", fill_by_n = TRUE)
+
+# Combined example: treemap with NA replacement, root label, and title
+count_to_treemap(
+  starwars_na_count,
+  na_handling = "replace",
+  na_replace_str = "MISSING",
+  root_label = "Galaxy Far, Far Away",
+  fill_by_n = TRUE,
+  colorscale = "Cividis",
+  layout = list(title = "Character Hierarchy (with NAs replaced)")
+)
 }
